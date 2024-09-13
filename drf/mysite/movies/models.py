@@ -1,0 +1,15 @@
+from django.db import models
+
+# Create your models here.
+class Moviedata(models.Model):    
+
+    def __str__(self):
+        return self.name
+
+
+    name = models.CharField(max_length=200)
+    duration = models.FloatField()
+    rating = models.FloatField()
+    Typ = models.CharField(max_length=200,default='action')
+    Image = models.ImageField(default='MovieImages/movie_placeholder.jpg',upload_to='MovieImages/')
+

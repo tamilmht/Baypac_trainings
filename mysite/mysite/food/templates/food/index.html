@@ -1,0 +1,42 @@
+{% extends 'food/base.html' %}
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    </head>
+
+    <body>
+
+        <!-- <ul>   oldcode
+            <li>
+                 <a href="/food/{{item.id}}">{{item.id}} -- {{item.item_name}}</a> -->
+                <!-- Converting static above url to dynamic 
+                <a href="{%url 'food:detail' item.id %}">{{item.id}} -- {{item.item_name}}</a>
+            </li>
+        </ul> -->
+
+        {% block body %}
+        {% for item in item_list%}
+            <div class="row">
+                <div class="col-md-4 offset-md-2">
+                    <img class="card" height="150px" width="250px" src="{{ item.item_image }}">
+                </div>
+                <div class="col-md-3">
+                    <h3>{{item.item_name}}</h3>
+                    <h5>{{item.item_desc}}</h5>
+                    <h6>{{item.item_price}}</h6>
+                    <h6>{{item.user_name}}</h6>
+                </div>
+                <div class="col-md-2">
+                    <a class="btn btn-success" href="{% url 'food:detail' item.id %}">Details</a>
+                </div>
+            </div>
+        {% endfor %}
+        {% endblock %}
+    </body>
+</html>

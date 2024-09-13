@@ -1,0 +1,141 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<xsl:stylesheet version = "1.0" xmlns:xsl = "http://www.w3.org/1999/XSL/Transform" xmlns:peci="urn:com.workday/peci">
+    <xsl:output method = "xml" indent = "yes" encoding="UTF-8"/>
+
+    <xsl:template match = "peci:Workers_Effective_Stack">
+        <root>
+            <!-- <peci_summary>
+                <xsl:apply-templates select = "peci:Summary"/>
+            </peci_summary>
+
+            <peci_worker_summary>
+                <xsl:apply-templates select = "peci:Worker/peci:Worker_Summary"/>
+            </peci_worker_summary>
+
+            <peci_effective_change>
+                <xsl:apply-templates select = "peci:Worker/peci:Effective_Change"/>
+            </peci_effective_change>
+
+            <peci_worker_status>
+                <xsl:apply-templates select = "peci:Worker/peci:Effective_Change/peci:Worker_Status"/>
+            </peci_worker_status> -->
+            <peci_position>
+                <xsl:apply-templates select = "peci:Worker/peci:Effective_Change/peci:Position"/>
+            </peci_position>
+        </root>
+    </xsl:template>
+    
+    <xsl:template match = "peci:Summary">
+        <row>
+            <xsl:apply-templates select = "peci:*"/>
+        </row>
+    </xsl:template>
+
+    <xsl:template match = "peci:Summary/peci:*">
+        <xsl:variable name = "elementName" select = "local-name()"/>
+        <xsl:element name = "{$elementName}"><xsl:value-of select = "."/></xsl:element>
+    </xsl:template>
+
+
+
+    <xsl:template match = "peci:Worker_Summary">
+        <row>
+            <WID><xsl:value-of select = "peci:WID"/></WID>
+            <Employee_ID><xsl:value-of select = "peci:Employee_ID"/></Employee_ID>
+            <Name><xsl:value-of select = "peci:Name"/></Name>
+        </row>
+    </xsl:template>
+
+    <xsl:template match = "peci:Effective_Change">
+        <row>
+            <Employee_ID><xsl:value-of select = "../peci:Worker_Summary/peci:Employee_ID"/></Employee_ID>
+            <Effseq><xsl:value-of select = "@peci:Sequence"/></Effseq>
+            <Derived_Event_Code><xsl:value-of select = "peci:Derived_Event_Code"/></Derived_Event_Code>
+            <Effective_Moment><xsl:value-of select = "peci:Effective_Moment"/></Effective_Moment>
+            <Entry_Moment><xsl:value-of select = "peci:Entry_Moment"/></Entry_Moment>
+        </row>
+    </xsl:template>
+
+    <xsl:template match = "peci:Worker_Status">
+        <row>
+            <Employee_ID><xsl:value-of select = "../../peci:Worker_Summary/peci:Employee_ID"/></Employee_ID>
+            <Effseq><xsl:value-of select = "../@peci:Sequence"/></Effseq>
+            <Action>
+                <xsl:choose>
+                    <xsl:when test = "@peci:isUpdated='1'">U</xsl:when>
+                    <xsl:when test = "@peci:isAdded='1'">A</xsl:when>
+                    <xsl:otherwise>N</xsl:otherwise>
+                </xsl:choose>
+            </Action>
+            <xsl:apply-templates select = "peci:*"/>
+        </row>
+    </xsl:template>
+
+    <xsl:template match = "peci:Position">
+        <xsl:variable name = "Pos_Seq" select = "position()"/>
+        <row>
+            <Employee_ID><xsl:value-of select = "../../peci:Worker_Summary/peci:Employee_ID"/></Employee_ID>
+            <Effseq><xsl:value-of select = "../@peci:Sequence"/></Effseq>
+            <Action>
+                <xsl:choose>
+                    <xsl:when test = "@peci:isUpdated='1'">U</xsl:when>
+                    <xsl:when test = "@peci:isAdded='1'">A</xsl:when>
+                    <xsl:otherwise>N</xsl:otherwise>
+                </xsl:choose>
+            </Action>
+            
+            <Pos_Seq><xsl:value-of select = "$Pos_Seq"/></Pos_Seq>
+            <xsl:apply-templates select = "peci:*[not(self::peci:Job_Family or self::peci:Business_Site or self::peci:Supervisor or self::peci:Organization)]"/>
+        </row>
+        <xsl:apply-templates select = "peci:Job_Family"><xsl:with-param name = 'Pos_Seq' select = "$Pos_Seq"/></xsl:apply-templates>
+        <!-- <xsl:apply-templates select = "peci:Business_Site"/>
+        <xsl:apply-templates select = "peci:Supervisor"/>
+        <xsl:apply-templates select = "peci:Organization"/> -->
+    </xsl:template>
+
+    <xsl:template match = "peci:Job_Family | peci:Business_Site | peci:Supervisor | peci:Organization">
+        <xsl:param name = "Pos_Seq"/>
+        <xsl:variable name = "elementName" select = "local-name()"/>
+        <xsl:variable name = "Seq" select = "position()"/>
+        <xsl:element name = "{concat('peci_',$elementName)}">
+            <Employee_ID><xsl:value-of select = "../../../peci:Worker_Summary/peci:Employee_ID"/></Employee_ID>
+                <Effseq><xsl:value-of select = "../../@peci:Sequence"/></Effseq>
+                <Action>
+                    <xsl:choose>
+                        <xsl:when test = "@peci:isUpdated='1'">U</xsl:when>
+                        <xsl:when test = "@peci:isAdded='1'">A</xsl:when>
+                        <xsl:otherwise>N</xsl:otherwise>
+                    </xsl:choose>
+                </Action>
+                <Pos_Seq><xsl:value-of select = "$Pos_Seq"/></Pos_Seq>
+                <Seq><xsl:value-of select = "$Seq"/></Seq>
+                <xsl:apply-templates select = "peci:*">
+                    <call-template name = "Name_ACTN_PV"/>
+                </apply-templates>
+        </xsl:element>
+    </xsl:template>
+
+
+    <xsl:template name = "Name_ACTN_PV" match = "peci:Worker_Status/peci:* | peci:Position/peci:*[not(self::peci:Job_Family or self::peci:Business_Site or self::peci:Supervisor or self::peci:Organization)]">
+        <xsl:variable name = "elementName" select = "local-name()"/>
+        <xsl:variable name = "elementNameACTN" select = "concat($elementName,'_ACTN')"/>
+        <xsl:variable name = "elementNamePV" select = "concat($elementName,'_PV')"/>
+
+        <xsl:element name = "{$elementName}">
+            <xsl:value-of select = "."/>
+        </xsl:element>
+
+        <xsl:element name = "{$elementNameACTN}">
+            <xsl:choose>
+                <xsl:when test = "@peci:isAdded = '1'">A</xsl:when>
+                <xsl:when test = "@peci:isDeleted = '1'">D</xsl:when>
+            </xsl:choose>
+        </xsl:element>
+
+        <xsl:element name = "{$elementNamePV}">
+            <xsl:value-of select = "@peci:priorValue"/>
+        </xsl:element>
+
+    </xsl:template>
+
+</xsl:stylesheet>

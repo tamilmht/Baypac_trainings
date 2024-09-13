@@ -1,0 +1,203 @@
+<xsl:stylesheet version = "1.0" xmlns:xsl = "http://www.w3.org/1999/XSL/Transform" xmlns:peci="urn:com.workday/peci">
+    <xsl:output method = "xml" indent = "yes" encoding="UTF-8"/>
+
+    <xsl:template match = "peci:Workers_Effective_Stack">
+        <root>
+            <peci_summary>
+                <xsl:apply-templates select = "peci:Summary"/>
+            </peci_summary>
+
+            <peci_worker_summary>
+                <xsl:apply-templates select = "peci:Worker/peci:Worker_Summary"/>
+            </peci_worker_summary>
+
+            <peci_effective_change>
+                <xsl:apply-templates select = "peci:Worker/peci:Effective_Change"/>
+            </peci_effective_change>
+
+            <peci_worker_status>
+                <xsl:apply-templates select = "peci:Worker/peci:Effective_Change/peci:Worker_Status"/>
+            </peci_worker_status>
+
+            <peci_position>
+                <xsl:apply-templates select = "peci:Worker/peci:Effective_Change/peci:Position"/>
+            </peci_position>
+
+            <peci_compensation>
+                <xsl:apply-templates select = "peci:Worker/peci:Effective_Change/peci:Compensation"/>
+            </peci_compensation>
+
+            <peci_compensation_plans>
+                <xsl:apply-templates select = "peci:Worker/peci:Effective_Change/peci:Compensation_Plans"/>
+            </peci_compensation_plans>
+
+            <peci_employee_contract>
+                <xsl:apply-templates select = "peci:Worker/peci:Effective_Change/peci:Employee_Contract"/>
+            </peci_employee_contract>
+
+            <peci_comp_earn_ded>
+                <xsl:apply-templates select = "peci:Worker/peci:Effective_Change/peci:Compensation_Earnings_and_Deductions"/>
+            </peci_comp_earn_ded>
+
+            <peci_additional_info>
+                <xsl:apply-templates select = "peci:Worker/peci:Effective_Change/peci:Additional_Information"/>
+            </peci_additional_info>
+
+            <peci_transaction_log>
+                <xsl:apply-templates select = "peci:Worker/peci:Effective_Change/peci:Transaction_Log"/>
+            </peci_transaction_log>
+        </root>
+    </xsl:template>
+    
+    
+    
+    <xsl:template match = "peci:Summary|peci:Worker_Summary" >
+        <row>
+            <xsl:for-each select = "*">
+                <xsl:element name = "{local-name()}"><xsl:value-of select = "."/></xsl:element>
+            </xsl:for-each>
+        </row>
+    </xsl:template>    
+
+    <xsl:template match = "peci:Effective_Change">
+        <row>
+            <Employee_ID><xsl:value-of select = "../peci:Worker_Summary/peci:Employee_ID"/></Employee_ID>
+            <Effseq><xsl:value-of select = "@peci:Sequence"/></Effseq>
+            <Derived_Event_Code><xsl:value-of select = "peci:Derived_Event_Code"/></Derived_Event_Code>
+            <Effective_Moment><xsl:value-of select = "peci:Effective_Moment"/></Effective_Moment>
+            <Entry_Moment><xsl:value-of select = "peci:Entry_Moment"/></Entry_Moment>
+        </row>
+    </xsl:template>
+
+    <xsl:template match = "peci:Worker_Status|peci:Position|peci:Compensation|peci:Compensation_Plans|peci:Employee_Contract|peci:Compensation_Earnings_and_Deductions
+                            |peci:Additional_Information|peci:Transaction_Log">
+        <xsl:variable name = "order" select = "position()"/>
+        <xsl:variable name = "Employee_ID" select = "../../peci:Worker_Summary/peci:Employee_ID"/>
+        <xsl:variable name = "Effseq" select ="../@peci:Sequence"/>
+        <row>
+            <Employee_ID><xsl:value-of select = "$Employee_ID"/></Employee_ID>
+            <Effseq><xsl:value-of select = "$Effseq"/></Effseq>
+            <Action>
+                <xsl:choose>
+                    <xsl:when test = "@peci:isUpdated='1'">U</xsl:when>
+                    <xsl:when test = "@peci:isAdded='1'">A</xsl:when>
+                    <xsl:otherwise>N</xsl:otherwise>
+                </xsl:choose>
+            </Action>
+            <order><xsl:value-of select = "$order"/></order>
+            <xsl:for-each select = "*">
+                <xsl:choose>
+                    <xsl:when test = "local-name() = 'Job_Family' or local-name() = 'Business_Site' or local-name() = 'Supervisor' or local-name() = 'Organization'
+                                      or local-name() = 'Salary_and_Hourly_Plan' or local-name() = 'Bonus_Plan' or local-name() = 'peci:Compensation_Element' "/>
+                    <xsl:otherwise>
+                        <xsl:call-template name = "Name_ACTN_PV">
+                            <xsl:with-param name = 'element' select = "."/>
+                        </xsl:call-template>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:for-each>
+            <xsl:call-template name = "Nested_Child">
+                <xsl:with-param name = "element" select = "peci:Job_Family"/>
+                <xsl:with-param name = "ChildName" select = "'peci_job_family'"/>
+                <xsl:with-param name = "Employee_ID" select = "$Employee_ID"/>
+                <xsl:with-param name = "Effseq" select = "$Effseq"/>
+                <xsl:with-param name = "order" select = "$order"/>
+            </xsl:call-template>
+            <xsl:call-template name = "Nested_Child">
+                <xsl:with-param name = "element" select = "peci:Business_Site"/>
+                <xsl:with-param name = "ChildName" select = "'peci_Business_Site'"/>
+                <xsl:with-param name = "Employee_ID" select = "$Employee_ID"/>
+                <xsl:with-param name = "Effseq" select = "$Effseq"/>
+                <xsl:with-param name = "order" select = "$order"/>
+            </xsl:call-template>
+            <xsl:call-template name = "Nested_Child">
+                <xsl:with-param name = "element" select = "peci:Supervisor"/>
+                <xsl:with-param name = "ChildName" select = "'peci_Supervisor'"/>
+                <xsl:with-param name = "Employee_ID" select = "$Employee_ID"/>
+                <xsl:with-param name = "Effseq" select = "$Effseq"/>
+                <xsl:with-param name = "order" select = "$order"/>
+            </xsl:call-template>
+            <xsl:call-template name = "Nested_Child">
+                <xsl:with-param name = "element" select = "peci:Organization"/>
+                <xsl:with-param name = "ChildName" select = "'peci_Organization'"/>
+                <xsl:with-param name = "Employee_ID" select = "$Employee_ID"/>
+                <xsl:with-param name = "Effseq" select = "$Effseq"/>
+                <xsl:with-param name = "order" select = "$order"/>
+            </xsl:call-template>
+            <xsl:call-template name = "Nested_Child">
+                <xsl:with-param name = "element" select = "peci:Salary_and_Hourly_Plan"/>
+                <xsl:with-param name = "ChildName" select = "'peci_Salary_and_Hourly_Plan'"/>
+                <xsl:with-param name = "Employee_ID" select = "$Employee_ID"/>
+                <xsl:with-param name = "Effseq" select = "$Effseq"/>
+                <xsl:with-param name = "order" select = "$order"/>
+            </xsl:call-template>
+            <xsl:call-template name = "Nested_Child">
+                <xsl:with-param name = "element" select = "peci:Bonus_Plan"/>
+                <xsl:with-param name = "ChildName" select = "'peci_Bonus_Plan'"/>
+                <xsl:with-param name = "Employee_ID" select = "$Employee_ID"/>
+                <xsl:with-param name = "Effseq" select = "$Effseq"/>
+                <xsl:with-param name = "order" select = "$order"/>
+            </xsl:call-template>
+            <xsl:call-template name = "Nested_Child">
+                <xsl:with-param name = "element" select = "peci:Compensation_Element"/>
+                <xsl:with-param name = "ChildName" select = "'peci_Compensation_Element'"/>
+                <xsl:with-param name = "Employee_ID" select = "$Employee_ID"/>
+                <xsl:with-param name = "Effseq" select = "$Effseq"/>
+                <xsl:with-param name = "order" select = "$order"/>
+            </xsl:call-template>
+        </row>
+    </xsl:template>
+
+    <xsl:template name = "Nested_Child">
+        <xsl:param name = "element"/>
+        <xsl:param name = "ChildName"/>
+        <xsl:param name = "Employee_ID"/>
+        <xsl:param name = "Effseq"/>
+        <xsl:param name = "order"/>
+        <xsl:variable name = "Seq" select = "position()"/>
+        <xsl:if test = "$element">
+            <xsl:element name = "{$ChildName}">
+                <xsl:for-each select = "$element">
+                    <row>
+                        <Employee_ID><xsl:value-of select = "$Employee_ID"/></Employee_ID>
+                        <Effseq><xsl:value-of select = "$Effseq"/></Effseq>
+                        <Action>
+                            <xsl:choose>
+                                <xsl:when test = "@peci:isUpdated='1'">U</xsl:when>
+                                <xsl:when test = "@peci:isAdded='1'">A</xsl:when>
+                                <xsl:when test = "@peci:isDeleted='1'">U</xsl:when>
+                                <xsl:otherwise>N</xsl:otherwise>
+                            </xsl:choose>
+                        </Action>
+                        <order><xsl:value-of select = "$order"/></order>
+                        <seq><xsl:value-of select = "$Seq"/></seq>
+                        <xsl:for-each select = "peci:*">
+                            <xsl:call-template name = "Name_ACTN_PV">
+                                <xsl:with-param name = "element" select = "."/>
+                                <xsl:with-param name = "elementName" select = "local-name()"/>
+                            </xsl:call-template>
+                        </xsl:for-each> 
+                    </row>
+                </xsl:for-each>
+            </xsl:element>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template name = "Name_ACTN_PV">
+        <xsl:param name = "element"/>
+
+        <xsl:element name = "{local-name()}">
+            <xsl:value-of select = "$element"/>
+        </xsl:element>
+        <xsl:element name = "{concat(local-name(),'_ACTN')}">
+            <xsl:choose>
+                <xsl:when test = "@peci:isAdded = '1'">A</xsl:when>
+                <xsl:when test = "@peci:isDeleted = '1'">D</xsl:when>
+            </xsl:choose>
+        </xsl:element>
+        <xsl:element name = "{concat(local-name(),'_PV')}">
+            <xsl:value-of select = "@peci:priorValue"/>
+        </xsl:element>
+    </xsl:template>
+
+</xsl:stylesheet>

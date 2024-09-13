@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Word Counter Tool</title>
+    </head>
+    <body>
+        <form id ='form1'>
+            Enter the word here : <input type = 'text' name = 'text'><br><br><br>
+            <input type = 'button' value = 'Click to get count' onclick="countgenerator()">
+        </form>
+        <br>
+        <br>
+        <p id = 'demo'></p>
+
+        <script>
+            function countgenerator(){
+                let forms = document.getElementById('form1')[0].value;
+                return document.getElementById('demo').innerHTML = 'The result of word length calculator : '+forms.length;
+            }
+            
+        </script>
+    </body>
+</html>

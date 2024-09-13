@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>BMI Calculator</title>
+    </head>
+    <body>
+        <form id="form1">
+            Enter your weight in kg's :<input type = number name = weight><br><br>
+            Enter your Height in cm's :<input type = number name = height><br><br>
+            <input type = 'button' value = 'Get BMI' onclick = 'bmicalc()'>
+        </form>
+        <h2 id="bmi"></h2>
+    <br><br><br>
+    <P>
+        If your BMI is less than 18.5 then it falls within the underweight range. <br>
+        If your BMI is between 18.5 and 24.9 then it falls within the normal or Healthy Weight range. <br>
+        If your BMI is between 25.0 and 29.9 then it falls within the overweight range. <br>
+        If your BMI is 30.0 or higher then it falls within the obese range.
+    </P>
+
+
+        <script>
+            const forms = document.getElementById('form1');
+            let bmiresult;
+            function bmicalc(){
+                bmiresult = (forms[0].value/(forms[1].value * forms[1].value))/10000;
+                document.getElementById('bmi').innerHTML = bmiresult;                
+            }
+
+        </script>
+    </body>
+</html>

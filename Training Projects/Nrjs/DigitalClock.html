@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Digital Clock</title>
+    </head>
+    <body>
+        <p id = 'demo'>The current time is :</p>
+
+        <script>
+            setInterval(getCurrentDate,1000);
+            function getCurrentDate(){
+            let time = new Date();
+            let hrs = time.getHours();
+            let mins = time.getMinutes();
+            let secs = time.getSeconds();
+            let am_pm = 'AM';
+
+            if (hrs > 12){
+                hrs -= 12;
+                am_pm = 'PM';
+            }
+            if (hrs == 0){
+                hrs = 12;
+                am_pm = 'AM';
+            }
+
+            hrs = hrs < 10 ? "0" + hrs : hrs;
+            mins = mins < 10 ? "0" + mins : mins;
+            secs = secs < 10 ? "0" + secs : secs;
+
+            let current_time = hrs+':'+mins+':'+secs+' '+am_pm;
+            document.getElementById('demo').innerHTML = current_time;
+        };
+
+        getCurrentDate();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<HTML>
+	<BODY>
+		<P id='demo'></P>
+		<P id='demo1'></P>
+		<h2> This is a header </h2>
+		<p>This is a <b>Paragraph</b></p>
+		
+		<script>
+			let a=10;
+			
+			function test(){
+				document.getElementById('demo').innerHTML = a;
+			};
+			test();
+			const element = document.getElementsByTagName('p');
+			document.getElementById('demo1').innerHTML = 'This is the output : '+element[0].innerHTML;
+		</script>
+	</BODY>
+</HTML>

@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+<HTML>
+	<HEAD>
+		<TITLE>Forms</TITLE>
+	</HEAD>
+	<BODY>	
+		<button id='btn'>Click Me</button>
+		<p id='demo'></p>
+		
+		<script>
+			document.getElementById('btn').onclick = printtext;
+			function printtext(){
+				document.getElementById('demo').innerHTML = Date()
+				}
+		</script>
+	</BODY>
+</HTML>

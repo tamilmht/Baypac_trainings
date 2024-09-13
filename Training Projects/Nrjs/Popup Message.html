@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<HTML>
+    <BODY>
+        <FORM id = 'form1'>
+            Type Alert Msg : <INPUT TYPE = 'TEXT' NAME = 'alertmsg'><br>
+            <input type = 'button' value = 'clickme' onclick = 'popup()'>
+        </FORM>
+        <script>
+            const forms = document.getElementById("form1");
+            function popup(){
+                alert(forms[0].value);
+            }
+        </script>
+    </BODY>
+</HTML>

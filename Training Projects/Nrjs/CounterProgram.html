@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <h2 id="demo">0</h2>
+        <button id = 'btn1' onclick="number_increase(a)">Press to increase count</button>
+        <button id = 'btn2' onclick="number_decrease(a)">Press to decrease count</button>
+    </head>
+    <script>
+        let a = 0;
+         function number_increase(x){
+            a=x+1;
+            writedata(a);
+        }
+        function number_decrease(x){
+            a = x-1;
+            writedata(a);
+        }
+        function writedata(a){
+            if (a > 0) {
+                document.getElementById('demo').style.color = 'green';
+            }
+            else if (a < 0) {
+                document.getElementById('demo').style.color = 'red';
+            }
+            else {
+                document.getElementById('demo').style.color = 'black';
+            }
+            document.getElementById('demo').innerHTML = a;
+            }
+       
+    </script>
+</html>

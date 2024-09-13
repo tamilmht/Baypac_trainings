@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Filter App</title>
+        <style>
+            .filterheader{
+                text-align: center;
+            };
+        </style>
+    </head>
+    <body>
+        <h1 class= 'filterheader'>Filter App</h1>
+        <input type="text" name="filterdata" id = 'input1' placeholder="Search Names Here..." onkeypress="myfunction()"
+             style="width: 40%; height: 1cm; align-content: center; padding: 10px; border-radius: 10px; background-color:aliceblue; font-size: x-large; font-style: italic;">
+        <ul id="mylist"></ul>
+    </body>
+    <script>
+        let namelist = ['Tamil','Chandru','giri','Kowsalya','Devaraj','Sakkaravarthy','Shahija','Vigneshwaran','Tulasi','Lahari','Ramji','Prakash','Shyam','Rajesh',
+                    'Nagendra','Venkat','Senthil','Magesh','Ambalavanan','Kishore','Bharathi','Lekha','Vijay','Vasanthi','Nirmal','Aashir','Sathish','Suresh','Sai','Priya'];
+        
+        function myfunction(){
+            let text = '';
+            let a = document.getElementById('input1').value.toUpperCase();
+            const result = namelist.filter(validfunction);
+            function validfunction(name){
+                return name.toUpperCase().startsWith(a);
+            };
+            result.forEach(listfunction);
+            
+            function listfunction(value, index, array){
+                text+="<li>"+value+"</li>";
+            };
+            document.getElementById('mylist').innerHTML = text;
+            
+        };
+        
+    </script>
+</html>

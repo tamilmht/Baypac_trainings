@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Math Calculator</title>
+        <style>
+            .row{
+                border:black solid 1px; 
+                width:294px; 
+                height:63px;
+                margin : 2px;
+                display: flex;
+                flex-wrap: nowrap;
+                align-items: center;
+                justify-content: space-evenly;
+            };
+
+            .btndiv{
+                width: 45px;
+                height: 45px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id = 'main' style = "border: black solid 2px; width: 8cm; height: 365px; margin: 100px;">
+            <div id = 'display' style = "border : black solid 1px; width:300px; height : 85px; font-size: xxx-large;">0</div>
+            <div id = 'keypad' style = "border : black solid 1px; width:300px; height:270px; margin-top:5px;">
+                <div class = 'row'>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functiondata(7)">7</button></div>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functiondata(8)">8</button></div>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functiondata(9)">9</button></div>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functiondata('rst')">RST</button></div>
+                </div>
+                <div class = 'row'>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functiondata(4)">4</button></div>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functiondata(5)">5</button></div>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functiondata(6)">6</button></div>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functiondata('divide')">DIV</button></div>
+                </div>
+                <div class = 'row'>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functiondata(1)">1</button></div>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functiondata(2)">2</button></div>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functiondata(3)">3</button></div>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functiondata('multiply')">MUL</button></div>
+                </div>
+                <div class = 'row'>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functiondata(0)">0</button></div>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functiondata('dot')">.</button></div>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functiondata('sub')">SUB</button></div>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functiondata('plus')">ADD</button></div>
+                    <div class = 'btndiv'><button class = 'bt' onclick="functionequal()">=</button></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let showdata = '';
+            cleardata = '';
+            function functiondata(a){
+                    switch (a){
+                        case 'rst':
+                            document.getElementById('display').innerHTML = 0;
+                            showdata = cleardata;
+                            break;
+                        case 'divide':
+                            showdata+= '/';
+                            document.getElementById('display').innerHTML = showdata;
+                            break;
+                        case 'multiply':
+                            showdata+= '*';
+                            document.getElementById('display').innerHTML = showdata;
+                            break;
+                        case 'dot':
+                            showdata+= '.';
+                            document.getElementById('display').innerHTML = showdata;
+                            break;
+                        case 'plus':
+                            showdata+= '+';
+                            document.getElementById('display').innerHTML = showdata;
+                            break;
+                        case 'sub':
+                            showdata+= '-';
+                            document.getElementById('display').innerHTML = showdata;
+                            break;
+                        default:
+                        showdata+= a.toString();
+                        document.getElementById('display').innerHTML = showdata;
+                        break;
+                    }
+            };
+            function functionequal(){
+                document.getElementById('display').innerHTML = showdata == '' ? 0 : eval(showdata);
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Image Slider</title>
+    </head>
+    <body>
+            <div id = 'image' style = "margin-top : 250px; margin-left: 550px;">
+                <button id = 'btn1' style="margin-top : 115px" onclick = 'function1()'>Prev</button>
+                <img id = 'img' style = "position: fixed; width: 7cm; height: 7cm; margin-left :10px;" src = 'Images\img1.jfif' alt = 'img1'/>
+                <button id = 'btn2' style = "margin-left : 286px;" onclick = 'function2()'>Next</button>
+            </div>
+        <script>
+            let images = [{"src":'Images/img1.jfif',"alt":"img1"},
+                          {"src":'Images/img2.jfif',"alt":"img2"},
+                          {"src":'Images/img3.jfif',"alt":"img3"},
+                          {"src":'Images/img4.jfif',"alt":"img4"},
+                          {"src":'Images/img5.jfif',"alt":"img5"}];
+            let current_image = document.getElementById('img');
+            let img_idx = 1;
+
+            function function1 () {
+                    if (img_idx == 1) {
+                        img_idx = 4;
+                        current_image.setAttribute("src",images[img_idx].src);
+                        current_image.setAttribute("alt",images[img_idx].alt);
+                    } else {
+                    current_image.setAttribute("src",images[img_idx].src);
+                    current_image.setAttribute("alt",images[img_idx].alt);
+                    img_idx--;
+                    }
+                    console.log(img_idx);
+                };
+            
+                function function2 () {
+                    if (img_idx == 5) {
+                        img_idx = 1;
+                        current_image.setAttribute("src",images[img_idx].src);
+                        current_image.setAttribute("alt",images[img_idx].alt);
+                    }
+                    else {
+                        current_image.setAttribute("src",images[img_idx].src);
+                        current_image.setAttribute("alt",images[img_idx].alt);
+                        img_idx++;
+
+                    }
+                    console.log(img_idx);
+                };
+        </script>
+    </body>
+</html>
